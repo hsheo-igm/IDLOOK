@@ -445,12 +445,11 @@ function renderDates(stats) {
       '<input type="checkbox" name="availableDates" value="' + escapeHTML(d) + '"' + (wasChecked ? ' checked' : '') + '>' +
       '<div class="date">' + d + '</div>';
     if (wasChecked) label.classList.add('selected');
-    label.addEventListener('click', function (e) {
-      if (e.target.tagName !== 'INPUT') {
-        const cb = label.querySelector('input');
-        cb.checked = !cb.checked;
-      }
-      label.classList.toggle('selected', label.querySelector('input').checked);
+    // 브라우저가 label-input 관계로 체크박스를 자동 토글하므로,
+    // 'selected' 시각 효과는 input의 change 이벤트로만 동기화한다.
+    const cb = label.querySelector('input');
+    cb.addEventListener('change', function () {
+      label.classList.toggle('selected', cb.checked);
     });
     grid.appendChild(label);
   });
