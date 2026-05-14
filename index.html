@@ -56,17 +56,19 @@
   .opt input[type="radio"]:disabled ~ span { color: var(--muted); }
 
   /* 일자 우선순위 카드 */
-  .date-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
-  @media (max-width: 540px) { .date-grid { grid-template-columns: 1fr 1fr; } }
+  .date-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+  @media (max-width: 540px) { .date-grid { grid-template-columns: 1fr; } }
   .date-card {
-    position: relative; border: 2px solid var(--border); border-radius: 10px; padding: 16px 8px 14px; cursor: pointer; transition: all .15s; text-align: center; background: #fff; user-select: none;
+    position: relative; border: 2px solid var(--border); border-radius: 10px; padding: 18px 12px 14px; cursor: pointer; transition: all .15s; text-align: center; background: #fff; user-select: none;
+    display: flex; flex-direction: column;
   }
   .date-card:hover { border-color: var(--primary-light); transform: translateY(-1px); }
   .date-card.selected { border-color: var(--primary); background: #f0f4ff; }
   .date-card .date { font-weight: 700; font-size: 16px; color: var(--text); }
-  .date-card .track-label { font-size: 11px; color: var(--muted); margin-top: 6px; font-weight: 500; line-height: 1.35; min-height: 30px; display: flex; align-items: center; justify-content: center; }
+  .date-card .track-label { font-size: 12px; color: var(--primary-light); margin-top: 8px; font-weight: 700; line-height: 1.35; }
   .date-card.selected .track-label { color: var(--primary); }
-  .date-card.mix .track-label { color: #b45309; font-weight: 600; }
+  .date-card.mix .track-label { color: #b45309; }
+  .date-card .track-desc { font-size: 11px; color: var(--muted); margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); line-height: 1.5; flex-grow: 1; display: flex; align-items: center; justify-content: center; }
   .priority-badge {
     position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #fff; min-width: 56px; padding: 4px 10px; border-radius: 14px; font-size: 12px; font-weight: 700; box-shadow: 0 3px 8px rgba(31, 58, 147, 0.3);
   }
@@ -274,6 +276,13 @@ const DATE_TRACKS = {
   '6/11(목)': '사무직(50%) + 이미지/영상(50%) 혼합'
 };
 
+// 트랙별 1~2줄 설명 (카드에 표시)
+const TRACK_DESCRIPTIONS = {
+  '사무직 중심': '문서·보고서 작성, 데이터 정리·분석, 반복 업무 자동화 등 사무 업무 전반에 AI 활용',
+  '이미지·영상 중심': '이미지 생성, 영상 제작 등 마케팅과 디자인에 필요한 시각콘텐츠 중심 AI 활용',
+  '사무직(50%) + 이미지/영상(50%) 혼합': '사무직 중심과 이미지영상 중심 양쪽 모두 경험해보는 통합 입문 과정'
+};
+
 const MAX_PRIORITIES = 3;
 let ranking = []; // [date, date, date] 클릭 순서로 1·2·3순위
 
@@ -388,7 +397,8 @@ function renderDateCards() {
     card.innerHTML =
       (isSelected ? '<div class="priority-badge">' + (rank + 1) + '순위</div>' : '') +
       '<div class="date">' + d + '</div>' +
-      '<div class="track-label">' + escapeHTML(track) + '</div>';
+      '<div class="track-label">' + escapeHTML(track) + '</div>' +
+      '<div class="track-desc">' + escapeHTML(TRACK_DESCRIPTIONS[track] || '') + '</div>';
 
     card.addEventListener('click', function () {
       const idx = ranking.indexOf(d);
